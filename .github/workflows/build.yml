@@ -6,6 +6,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Extension
@@ -18,8 +21,7 @@ jobs:
       - name: 设置 Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # 使用 Node.js 20
-          cache: 'npm'
+          node-version: '20'
           
       - name: 安装依赖
         run: npm ci
@@ -27,7 +29,7 @@ jobs:
       - name: 编译 TypeScript
         run: npm run compile
         
-      - name: 打包 VSIX（使用本地 vsce）
+      - name: 打包 VSIX
         run: |
           npm install @vscode/vsce --save-dev
           npx vsce package --no-yarn
@@ -64,7 +66,7 @@ jobs:
           path: ./*.vsix
           
       - name: 创建 Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ./*.vsix
           body: ${{ steps.extract_changelog.outputs.changelog }}
