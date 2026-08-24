@@ -1,20 +1,23 @@
 {
   "name": "eu4-special-escape",
   "displayName": "EU4 Special Escape",
-  "description": "EU4特殊字符转义工具",
-  "version": "0.0.1",
+  "description": "EU4特殊字符转义工具 - 一键处理本地化文件中的特殊字符",
+  "version": "0.0.2",
   "publisher": "gjcloak",
   "engines": {
     "vscode": "^1.80.0"
   },
   "categories": ["Other"],
-  "activationEvents": [
-    "onCommand:eu4-special-escape.escape"
+  "keywords": [
+    "eu4",
+    "localisation",
+    "escape",
+    "unicode",
+    "paradox"
   ],
-  "main": "./out/extension.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gongjuecloak/eu4-special-escape"
+    "url": "https://github.com/gjcloak/eu4-special-escape"
   },
   "license": "MIT",
   "contributes": {
@@ -22,6 +25,11 @@
       {
         "command": "eu4-special-escape.escape",
         "title": "EU4: 转义选中文本",
+        "category": "EU4"
+      },
+      {
+        "command": "eu4-special-escape.toggleSettings",
+        "title": "EU4: 切换设置",
         "category": "EU4"
       }
     ],
