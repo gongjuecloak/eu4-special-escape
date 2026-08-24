@@ -1,4 +1,4 @@
-name: Build VSIX Package
+name: Build and Publish Extension
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: Build Extension
+    name: Build and Publish
     runs-on: ubuntu-latest
     
     steps:
@@ -29,11 +29,12 @@ jobs:
       - name: 编译 TypeScript
         run: npm run compile
         
+      - name: 安装打包工具
+        run: npm install -g @vscode/vsce
+        
       - name: 打包 VSIX
-        run: |
-          npm install @vscode/vsce --save-dev
-          npx vsce package --no-yarn
-          
+        run: vsce package --no-yarn
+        
       - name: 提取版本更新内容
         id: extract_changelog
         run: |
@@ -59,17 +60,21 @@ jobs:
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
           
-      - name: 上传打包文件
-        uses: actions/upload-artifact@v4
-        with:
-          name: eu4-special-escape
-          path: ./*.vsix
-          
-      - name: 创建 Release
+      - name: 创建 GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: ./*.vsix
           body: ${{ steps.extract_changelog.outputs.changelog }}
-          generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: 发布到 VS Code 市场
+        run: |
+          echo "🚀 发布到 VS Code 市场..."
+          vsce publish -p ${{ secrets.VSCODE_MARKETPLACE_TOKEN }}
+          
+      - name: 发布成功
+        if: success()
+        run: |
+          echo "✅ 发布成功！"
+          echo "🌐 https://marketplace.visualstudio.com/items?itemName=gjcloak.eu4-special-escape"
