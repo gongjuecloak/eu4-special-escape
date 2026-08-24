@@ -20,6 +20,11 @@
     "url": "https://github.com/gjcloak/eu4-special-escape"
   },
   "license": "MIT",
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onCommand:eu4-special-escape.escape",
+    "onCommand:eu4-special-escape.toggleSettings"
+  ],
   "contributes": {
     "commands": [
       {
