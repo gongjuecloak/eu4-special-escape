@@ -1,4 +1,3 @@
-# .github/workflows/build.yml
 name: Build VSIX Package
 
 on:
@@ -33,6 +32,46 @@ jobs:
       - name: 打包 VSIX
         run: vsce package --no-yarn
         
+      - name: 提取版本更新内容
+        id: extract_changelog
+        run: |
+          # 获取当前版本号
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "版本: $VERSION"
+          
+          # 从 CHANGELOG.md 提取对应版本的内容
+          # 查找 ## [$VERSION] 或 ## v$VERSION 到下一个 ## 之间的内容
+          if [ -f CHANGELOG.md ]; then
+            CHANGELOG=$(awk -v ver="$VERSION" '
+              BEGIN { print_content = 0 }
+              /^## \[/ && $0 ~ ver { print_content = 1; next }
+              /^## \[/ && print_content { exit }
+              print_content { print }
+            ' CHANGELOG.md)
+            
+            # 如果没有找到，尝试匹配 ## v$VERSION
+            if [ -z "$CHANGELOG" ]; then
+              CHANGELOG=$(awk -v ver="$VERSION" '
+                BEGIN { print_content = 0 }
+                /^## v/ && $0 ~ ver { print_content = 1; next }
+                /^## / && print_content { exit }
+                print_content { print }
+              ' CHANGELOG.md)
+            fi
+            
+            # 如果还是没有找到，使用默认内容
+            if [ -z "$CHANGELOG" ]; then
+              CHANGELOG="版本 $VERSION 发布"
+            fi
+          else
+            CHANGELOG="版本 $VERSION 发布"
+          fi
+          
+          # 保存到环境变量
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
       - name: 上传打包文件
         uses: actions/upload-artifact@v4
         with:
@@ -43,6 +82,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ./*.vsix
-          generate_release_notes: true
+          body: ${{ steps.extract_changelog.outputs.changelog }}
+          generate_release_notes: false
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
