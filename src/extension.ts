@@ -1,4 +1,3 @@
-cat > src/extension.ts << 'EOF'
 import * as vscode from 'vscode';
 
 function cp1252ToUtf8(char: number): number {
@@ -63,7 +62,6 @@ function encodeText(text: string, options: { utf8: boolean; newVersion: boolean 
     return [...text].map(ch => specialEscape(ch, options.utf8, options.newVersion)).join('');
 }
 
-// 状态栏管理
 let statusBarItem: vscode.StatusBarItem | undefined;
 
 function updateStatusBar() {
@@ -85,10 +83,8 @@ function updateStatusBar() {
 export function activate(context: vscode.ExtensionContext) {
     console.log('EU4 Special Escape 已激活 v0.0.2');
     
-    // 显示状态栏
     updateStatusBar();
     
-    // 监听配置变化
     context.subscriptions.push(
         vscode.workspace.onDidChangeConfiguration(e => {
             if (e.affectsConfiguration('eu4SpecialEscape')) {
@@ -97,7 +93,6 @@ export function activate(context: vscode.ExtensionContext) {
         })
     );
     
-    // 转义命令
     let escapeCommand = vscode.commands.registerCommand('eu4-special-escape.escape', async () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
@@ -128,7 +123,6 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
     
-    // 切换设置命令
     let toggleCommand = vscode.commands.registerCommand('eu4-special-escape.toggleSettings', async () => {
         const config = vscode.workspace.getConfiguration('eu4SpecialEscape');
         const currentUtf8 = config.get('utf8', true);
@@ -159,4 +153,3 @@ export function deactivate() {
         statusBarItem.dispose();
     }
 }
-EOF
