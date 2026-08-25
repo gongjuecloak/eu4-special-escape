@@ -69,10 +69,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: 发布到 VS Code 市场（带 CHANGELOG）
+      - name: 发布到 VS Code 市场
         run: |
           echo "🚀 发布到 VS Code 市场..."
-          vsce publish -p ${{ secrets.VSCODE_MARKETPLACE_TOKEN }} --changelog CHANGELOG.md
+          # vsce publish 会自动使用 CHANGELOG.md
+          vsce publish -p ${{ secrets.VSCODE_MARKETPLACE_TOKEN }}
           
       - name: 发布成功通知
         if: success()
