@@ -2,39 +2,84 @@
   "name": "eu4-special-escape",
   "displayName": "EU4 Special Escape",
   "description": "EU4特殊字符转义工具 - 一键处理本地化文件中的特殊字符",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "publisher": "gjcloak",
   "engines": {
     "vscode": "^1.80.0"
   },
-  "categories": ["Other"],
+  "categories": [
+    "Other"
+  ],
   "keywords": [
     "eu4",
     "localisation",
     "escape",
     "unicode",
-    "paradox"
+    "paradox",
+    "ck2",
+    "stellaris"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/gjcloak/eu4-special-escape"
   },
+  "homepage": "https://github.com/gjcloak/eu4-special-escape#readme",
+  "bugs": {
+    "url": "https://github.com/gjcloak/eu4-special-escape/issues"
+  },
   "license": "MIT",
+  "icon": "resources/icon.png",
   "main": "./out/extension.js",
   "activationEvents": [
     "onCommand:eu4-special-escape.escape",
-    "onCommand:eu4-special-escape.toggleSettings"
+    "onCommand:eu4-special-escape.decode",
+    "onCommand:eu4-special-escape.batchProcess",
+    "onCommand:eu4-special-escape.preview",
+    "onCommand:eu4-special-escape.autoEscape",
+    "onCommand:eu4-special-escape.loadPreset",
+    "onCommand:eu4-special-escape.toggleSettings",
+    "onCommand:eu4-special-escape.clearCache"
   ],
   "contributes": {
     "commands": [
       {
         "command": "eu4-special-escape.escape",
-        "title": "EU4: 转义选中文本",
+        "title": "转义选中文本",
+        "category": "EU4"
+      },
+      {
+        "command": "eu4-special-escape.decode",
+        "title": "解码选中文本",
+        "category": "EU4"
+      },
+      {
+        "command": "eu4-special-escape.batchProcess",
+        "title": "批量处理文件夹",
+        "category": "EU4"
+      },
+      {
+        "command": "eu4-special-escape.preview",
+        "title": "预览转义效果",
+        "category": "EU4"
+      },
+      {
+        "command": "eu4-special-escape.autoEscape",
+        "title": "智能转义（自动检测）",
+        "category": "EU4"
+      },
+      {
+        "command": "eu4-special-escape.loadPreset",
+        "title": "加载配置预设",
         "category": "EU4"
       },
       {
         "command": "eu4-special-escape.toggleSettings",
-        "title": "EU4: 切换设置",
+        "title": "切换设置",
+        "category": "EU4"
+      },
+      {
+        "command": "eu4-special-escape.clearCache",
+        "title": "清除缓存",
         "category": "EU4"
       }
     ],
@@ -44,6 +89,18 @@
         "key": "ctrl+shift+e",
         "mac": "cmd+shift+e",
         "when": "editorTextFocus && editorHasSelection"
+      },
+      {
+        "command": "eu4-special-escape.decode",
+        "key": "ctrl+shift+d",
+        "mac": "cmd+shift+d",
+        "when": "editorTextFocus && editorHasSelection"
+      },
+      {
+        "command": "eu4-special-escape.autoEscape",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a",
+        "when": "editorTextFocus && editorHasSelection"
       }
     ],
     "menus": {
@@ -52,6 +109,22 @@
           "command": "eu4-special-escape.escape",
           "group": "EU4@1",
           "when": "editorHasSelection"
+        },
+        {
+          "command": "eu4-special-escape.decode",
+          "group": "EU4@2",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "eu4-special-escape.autoEscape",
+          "group": "EU4@3",
+          "when": "editorHasSelection"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "eu4-special-escape.batchProcess",
+          "group": "EU4@1"
         }
       ]
     },
@@ -67,6 +140,26 @@
           "type": "boolean",
           "default": true,
           "description": "使用EU4 1.26+新规则"
+        },
+        "eu4SpecialEscape.enableCache": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用缓存以提升性能"
+        },
+        "eu4SpecialEscape.autoDetect": {
+          "type": "boolean",
+          "default": true,
+          "description": "自动检测文件类型并推荐配置"
+        },
+        "eu4SpecialEscape.presets": {
+          "type": "object",
+          "default": {},
+          "description": "自定义配置预设"
+        },
+        "eu4SpecialEscape.macros": {
+          "type": "array",
+          "default": [],
+          "description": "自定义转义宏"
         }
       }
     }
@@ -74,11 +167,19 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "watch": "tsc -watch -p ./",
+    "test": "mocha --require ts-node/register test/**/*.test.ts",
+    "package": "vsce package --no-yarn"
   },
   "devDependencies": {
-    "@types/vscode": "^1.80.0",
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
     "@types/node": "16.x",
+    "@types/vscode": "^1.80.0",
+    "@vscode/vsce": "^2.22.0",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.1.6"
   }
 }

@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  build-and-publish:
     name: Build and Publish
     runs-on: ubuntu-latest
     
@@ -35,7 +35,7 @@ jobs:
       - name: 打包 VSIX
         run: vsce package --no-yarn
         
-      - name: 提取版本更新内容
+      - name: 提取 CHANGELOG
         id: extract_changelog
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
@@ -65,16 +65,17 @@ jobs:
         with:
           files: ./*.vsix
           body: ${{ steps.extract_changelog.outputs.changelog }}
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: 发布到 VS Code 市场
+      - name: 发布到 VS Code 市场（带 CHANGELOG）
         run: |
           echo "🚀 发布到 VS Code 市场..."
-          vsce publish -p ${{ secrets.VSCODE_MARKETPLACE_TOKEN }}
+          vsce publish -p ${{ secrets.VSCODE_MARKETPLACE_TOKEN }} --changelog CHANGELOG.md
           
-      - name: 发布成功
+      - name: 发布成功通知
         if: success()
         run: |
           echo "✅ 发布成功！"
-          echo "🌐 https://marketplace.visualstudio.com/items?itemName=gjcloak.eu4-special-escape"
+          echo "🌐 市场: https://marketplace.visualstudio.com/items?itemName=gjcloak.eu4-special-escape"
