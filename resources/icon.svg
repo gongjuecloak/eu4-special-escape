@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <rect width="128" height="128" rx="20" fill="#1e1e2e"/>
-  <text x="64" y="70" font-family="Arial" font-size="40" fill="#4fc3f7" text-anchor="middle">EU4</text>
-  <text x="64" y="95" font-family="Arial" font-size="12" fill="#81d4fa" text-anchor="middle">⚡转义</text>
-  <circle cx="64" cy="64" r="55" fill="none" stroke="#4fc3f7" stroke-width="2" opacity="0.3"/>
-</svg>

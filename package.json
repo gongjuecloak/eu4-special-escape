@@ -28,7 +28,7 @@
     "url": "https://github.com/gjcloak/eu4-special-escape/issues"
   },
   "license": "MIT",
-  "icon": "resources/icon.svg",
+  "icon": "resources/icon.png",
   "main": "./out/extension.js",
   "activationEvents": [
     "onCommand:eu4-special-escape.escape",
